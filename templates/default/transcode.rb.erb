@@ -1,0 +1,57 @@
+#!/opt/chef/embedded/bin/ruby
+
+require "digest"
+require "fileutils"
+
+WORK_DIR = '<%= @dir %>'
+WAV_FILE = '<%= @wav %>'
+
+puts "Newscast transcode run starting at #{ Time.now }"
+
+if File.exists?(WAV_FILE)
+  # -- compute a sha256 -- #
+
+  sha256 = Digest::SHA256.file WAV_FILE
+
+  # -- do we have a stashed SHA? -- #
+
+  should_encode = true
+
+  sha_path = File.join(WORK_DIR,"shasum")
+  if File.exists?( sha_path )
+    last_sha = File.read( sha_path )
+
+    if last_sha == sha256.hexdigest
+      puts "SHA matches previous (#{last_sha}). Skipping encoding."
+      should_encode = false
+    end
+  end
+
+  if should_encode
+    mp4_path = WAV_FILE.sub(".wav",'.mp4')
+    mp4_temp_path = WAV_FILE.sub(".wav",'-temp.mp4')
+    puts "Encoding newscast. Writing to #{ mp4_path } (Tempfile at #{mp4_temp_path})"
+
+    out = `/usr/local/bin/ffmpeg -i #{WAV_FILE} -c:a libfdk_aac -b:a 64k -ac 1 -y #{mp4_temp_path}`
+
+    if $?.exitstatus == 0
+      # success
+      FileUtils.mv(mp4_temp_path,mp4_path)
+
+      puts "Moved new newscast transcoding into place."
+
+      # write our sha into cache
+      File.open(sha_path,"w") do |f|
+        f << sha256.hexdigest
+      end
+
+      puts "Wrote out new cached SHA: #{ sha256.hexdigest }"
+
+    else
+      puts "Encoding failed. Output was:\n#{out}"
+    end
+  end
+else
+  puts "Failed to find input wav file at #{WAV_FILE}."
+end
+
