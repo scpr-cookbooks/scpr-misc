@@ -1,7 +1,7 @@
 dir     = "/scpr/triton_export"
 ftp_dir = "/data/ftp/triton"
 
-user = "triton_export"
+user = "pureftpd"
 
 # Make sure Node is installed
 include_recipe "nodejs"
@@ -34,7 +34,7 @@ cron "export-triton-log-day" do
   action  :create
   hour    "3"
   minute  "0"
-  user    "pureftpd"
+  user    user
   command "#{script_path} > #{log_file} 2>&1"
 end
 
@@ -42,6 +42,6 @@ end
 
 file log_file do
   action  :create_if_missing
-  user    "pureftpd"
+  user    user
   mode    0644
 end
