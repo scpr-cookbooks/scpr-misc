@@ -4,7 +4,6 @@ require "fileutils"
 require "date"
 require "mixlib/shellout"
 
-WORK_DIR = '<%= @dir %>'
 FTP_DIR = '<%= @ftp_dir %>'
 
 # What was yesterday?
@@ -21,7 +20,7 @@ sm-log-exporter
   --index streammachine-hls
   --start #{y.strftime("%Y-%m-%d")}
   --end #{d.strftime("%Y-%m-%d")}
-  > #{WORK_DIR}/#{filename}
+  > #{FTP_DIR}/.tmp-#{filename}
 EOS
 
 puts "Preparing to write log file: #{filename}"
@@ -32,6 +31,6 @@ exporter.run_command
 if exporter.error?
   puts exporter.invalid!("Failed to export log")
 else
-  FileUtils.mv("#{WORK_DIR}/#{filename}","#{FTP_DIR}/#{filename}")
+  FileUtils.mv("#{FTP_DIR}/.tmp-#{filename}","#{FTP_DIR}/#{filename}")
   puts "Moved output log file to #{FTP_DIR}/#{filename}"
 end

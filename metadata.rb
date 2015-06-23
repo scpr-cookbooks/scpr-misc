@@ -4,7 +4,7 @@ maintainer_email 'erichardson@scpr.org'
 license          'apache2'
 description      'Installs/Configures scpr-misc'
 long_description 'Installs/Configures scpr-misc'
-version          '0.1.1'
+version          '0.1.2'
 
 depends "scpr-tools"
 depends "nfs"
