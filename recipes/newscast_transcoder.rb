@@ -22,7 +22,7 @@ end
 include_recipe "nfs"
 scpr_tools_media_mount "#{dir}/media" do
   action      :create
-  remote_path "/scpr/media"
+  remote_path "/volume1/media"
 end
 
 # -- install our encoding script -- #
