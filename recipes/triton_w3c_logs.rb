@@ -32,7 +32,7 @@ log_file = "/var/log/scpr_export_day_log.log"
 
 cron "export-triton-log-day" do
   action  :create
-  hour    "3"
+  hour    "12"
   minute  "0"
   user    user
   command "#{script_path} > #{log_file} 2>&1"
