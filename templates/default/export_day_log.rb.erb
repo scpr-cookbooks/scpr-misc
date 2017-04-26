@@ -15,7 +15,7 @@ filename = "kpcc-w3c-#{y.strftime("%Y-%m-%d")}.log"
 
 cmd = <<EOS
 sm-log-exporter
-  --server es-scpr-logstash.service.consul:9200
+  --server es-logstash.service.consul:9200
   --zone America/Los_Angeles
   --index streammachine-hls
   --start #{y.strftime("%Y-%m-%d")}
